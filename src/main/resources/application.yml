@@ -1,0 +1,4 @@
+spring:
+  application.name: mds
+  config:
+    import: classpath:securities.yml
