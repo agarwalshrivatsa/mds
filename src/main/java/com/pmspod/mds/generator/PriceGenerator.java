@@ -1,5 +1,6 @@
 package com.pmspod.mds.generator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pmspod.mds.config.SecuritiesConfig;
 import com.pmspod.mds.domain.dto.MarketData;
 import com.pmspod.mds.domain.equity.Security;
@@ -29,6 +30,8 @@ public class PriceGenerator implements ApplicationRunner {
     @Autowired
     public SecuritiesConfig securitiesConfig;
 
+    private ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Map<String, Security> securitiesMap = securitiesConfig.getSecuritiesMap();
@@ -36,8 +39,10 @@ public class PriceGenerator implements ApplicationRunner {
             for (Map.Entry<String, Security> entry : securitiesMap.entrySet()) {
                 MarketData data = generateMessage(entry.getValue());
                 String topic = generateTopic(entry.getValue());
-                log.info("topic: {}, data: {}", topic, data);
-                messagingTemplate.convertAndSend(topic, data);
+                String jsonData = mapper.writeValueAsString(data);
+
+                log.info("topic: {}, data: {}", topic, jsonData);
+                messagingTemplate.convertAndSend(topic, jsonData);
 
             }
             Thread.sleep(50);
@@ -48,7 +53,7 @@ public class PriceGenerator implements ApplicationRunner {
         String symbol = security.getSymbol();
         String exchange = security.getExchange();
 
-        return "/topic/v1/"+exchange+"/"+symbol;
+        return "/topic/v1";
     }
 
     public MarketData generateMessage(Security security){
