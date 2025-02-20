@@ -45,7 +45,7 @@ public class PriceGenerator implements ApplicationRunner {
                 messagingTemplate.convertAndSend(topic, jsonData);
 
             }
-            Thread.sleep(50);
+            Thread.sleep(400);
         }
     }
 
