@@ -41,7 +41,7 @@ public class PriceGenerator implements ApplicationRunner {
                 String topic = generateTopic(entry.getValue());
                 String jsonData = mapper.writeValueAsString(data);
 
-                log.info("topic: {}, data: {}", topic, jsonData);
+                // log.info("topic: {}, data: {}", topic, jsonData);
                 messagingTemplate.convertAndSend(topic, jsonData);
 
             }
